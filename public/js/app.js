@@ -2033,7 +2033,7 @@ __webpack_require__.r(__webpack_exports__);
       if (direction === 'right') {
         var columnCount = document.querySelectorAll('.columns').length;
 
-        if (this.currentCard.column.sort_order < columnCount) {
+        if (this.currentCard.column.sort_order < columnCount - 1) {
           this.currentCard.column_id += 1;
         } else {
           return;
