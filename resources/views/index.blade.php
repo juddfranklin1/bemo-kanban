@@ -18,7 +18,6 @@
         </style>
     </head>
     <body class="antialiased">
-        <h1>BeMo Kanban</h1>
         <div id="app"></div>
         <script src="/js/app.js"></script>
     </body>

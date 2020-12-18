@@ -1,7 +1,11 @@
 <template>
   <form class="form--card" @submit.prevent="updateCard" ref="cardForm">
-    <input required type="text" class="card__form__title" name="cardTitle" id="" :value="title" />
-    <textarea name="cardContent" class="card__form__content" id="" v-model="cardContent"></textarea>
+    <input required type="hidden" class="card__form__id" name="cardTitle" id="card_id" :value="currentCard.id" />
+    <label for="card_title">Title</label>
+    <input required type="text" class="card__form__title" name="cardTitle" id="card_title" :value="currentCard.title" />
+
+    <label for="card_content">Content</label>
+    <textarea name="cardContent" class="card__form__content" id="card_content" v-model="currentCard.content"></textarea>
     <button
       class="btn column__button--submit bg--success"
       title="Update Card"
@@ -16,16 +20,13 @@
 export default {
   name: "CardForm",
   props: {
-    title: {
-      type: String
+    card: {
+      type: Object
     },
-    content: {
-      type: String
-    }
   },
   data() {
     return {
-      cardContent: this.content
+      currentCard: this.card
     };
   },
   methods: {
@@ -44,6 +45,7 @@ form {
   flex-direction: column;
   input,
   textarea {
+    padding: .5rem;
     margin: 0 0 1rem;
     border: 1px solid black;
   }

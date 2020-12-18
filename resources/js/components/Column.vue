@@ -1,27 +1,30 @@
 <template>
-  <div class="column" :id="'column-' + index">
-    <button
-      class="btn column__button--delete bg--danger"
-      title="Delete Column"
-      @click="deleteColumn"
-    >
-      -
-    </button>
-    <button
-      class="btn column__button--add bg--success"
-      title="Add Card to Column"
-      @click="addCard"
-    >
-      + Card
-    </button>
+  <div class="column" :id="'column-' + id">
+    <div class="column__controls">
+        <button
+        class="btn column__button--delete bg--danger"
+        title="Delete Column"
+        @click="deleteColumn"
+        >
+        -
+        </button>
+        <button
+        class="btn column__button--add bg--success text--white"
+        title="Add Card to Column"
+        @click="addCard"
+        >
+        + Card
+        </button>
+    </div>
     <h2 class="column__title">{{ title }}</h2>
-    <transition-group tag="div" name="slide-fade">
+    <transition-group tag="div" class="column__content" name="slide-fade">
       <Card
-        @deleteCard="removeCard"
         v-for="(card, index) in currentCards"
+        @deleteCard="removeCard(card.id)"
         :key="card.title"
-        :title="card.title"
-        :index="index"
+        :card="card"
+        :column_id="id"
+        :index="card.id"
       />
     </transition-group>
     <div v-if="currentCards.length === 0">
@@ -34,6 +37,7 @@
 
 <script>
 import Card from "./Card";
+import Axios from "axios";
 
 export default {
   name: "Column",
@@ -49,7 +53,8 @@ export default {
       type: Number
     },
     cards: {
-      type: Array
+      type: Array,
+      default: () => []
     }
   },
   components: {
@@ -59,31 +64,31 @@ export default {
     deleteColumn() {
       this.$emit("deleteColumn", this.id);
     },
-    addCard() {
-      this.currentCards.unshift({
-        title: this.title + ": Card " + (this.currentCards.length + 1)
+    addCard() {// Add a card to the database and update component state
+      const now = new Date();
+      const card = {
+        title: "New Card " + now.toUTCString()
+      };
+      Axios.post("/api/cards", {
+        title: card.title,
+        column_id: this.id
+      })
+      .then(response => {// Async update of card state
+        this.currentCards.unshift({
+          title: response.data.title,
+          id: response.data.id
+        })
       });
     },
-    removeCard(index) {
-      this.currentCards.splice(index, 1);
+    removeCard(id) {
+      Axios.delete("/api/cards/" + id)
+        .then(response => this.currentCards = this.currentCards.filter(card => card.id !== id));
     }
   },
   data() {
+
     return {
-      currentCards: [
-        {
-          title: this.title + ": Card 1"
-        },
-        {
-          title: this.title + ": Card 2"
-        },
-        {
-          title: this.title + ": Card 3"
-        },
-        {
-          title: this.title + ": Card 4"
-        }
-      ]
+      currentCards: this.cards
     };
   }
 };
@@ -108,23 +113,19 @@ export default {
   flex-grow: 1;
   border: 1px solid black;
   border-radius: 4px;
-  padding: 2px;
   margin: 0.25rem;
   position: relative;
-  padding-top: 2rem;
+  padding-top: 0;
   display: flex;
   flex-direction: column;
-  &__button {
-    &--delete {
-      position: absolute;
-      top: 0.25rem;
-      right: 0.25rem;
-    }
-    &--add {
-      position: absolute;
-      top: 0.25rem;
-      left: 0.25rem;
-    }
+  &__controls {
+      padding: 2px;
+      background-color: #fafafa;
+      display:flex;
+      justify-content: space-between;
+  }
+  &__content {
+      padding: 2px;
   }
 }
 </style>

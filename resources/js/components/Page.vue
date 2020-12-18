@@ -8,17 +8,18 @@
       Add Column
     </button>
     <div class="columns">
-      <transition-group tag="div" name="slide-fade" class="columns">
+      <transition-group tag="div" name="slide-fade" class="columns__container">
         <Column
-          @deleteColumn="removeColumn"
           v-for="(column, index) in columns"
-          :key="column.title"
-          :id="index"
+          @deleteColumn="removeColumn(column.id)"
+          :key="'column-' + column.id"
+          :id="column.id"
           :index="index"
+          :cards="column.cards"
           :title="column.title"
         />
       </transition-group>
-      <div v-if="columns.length === 0">
+      <div class="columns__message--message" v-if="columns.length === 0">
         <p class="text--center text--danger"><b>No Columns Currently</b></p>
       </div>
     </div>
@@ -27,6 +28,7 @@
 
 <script>
 import Column from "./Column";
+import Axios from "axios";
 
 export default {
   name: "Page",
@@ -37,36 +39,33 @@ export default {
     Column
   },
   data() {
+    const columnRequest = Axios.get("/api/columns")
+                            .then(response => this.columns = response.data);
+
     return {
-      columns: [
-        {
-          id: 0,
-          title: "Column 1"
-        },
-        {
-          id: 1,
-          title: "Column 2"
-        },
-        {
-          id: 2,
-          title: "Column 3"
-        },
-        {
-          id: 3,
-          title: "Column 4"
-        }
-      ]
+      columns: []
     };
   },
   methods: {
-    addColumn() {
-      this.columns.push({
-        title: "Column " + (this.columns.length + 1),
-        id: this.columns.length
-      });
+    addColumn() {// Add a column to the database and update component state
+      const now = new Date();
+      const column = {
+        title: "New Column " + now.toUTCString()
+      };
+      console.log(column);
+      Axios.post("/api/columns", {
+          title: column.title
+      })
+      .then(response => {// Async update of
+        this.columns.push({
+        title: response.data.title,
+        id: response.data.id
+      })
+    });
     },
-    removeColumn(index) {
-      this.columns.splice(index, 1);
+    removeColumn(id) {// Remove a column from the database and update component state
+      Axios.delete("/api/columns/" + id)
+        .then(response => this.columns = this.columns.filter(col => col.id !== id))
     }
   }
 };
@@ -120,8 +119,14 @@ a {
   color: #42b983;
 }
 .columns {
-  display: flex;
-  width: 100%;
-  margin: auto;
+  &__container {
+    display: flex;
+    width: 100%;
+    margin: auto;
+  }
+  &__message--message {
+      width: 100%;
+      clear: both;
+  }
 }
 </style>

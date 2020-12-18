@@ -1935,7 +1935,11 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _CardForm__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CardForm */ "./resources/js/components/CardForm.vue");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _CardForm__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CardForm */ "./resources/js/components/CardForm.vue");
+//
+//
 //
 //
 //
@@ -1966,19 +1970,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Card",
   components: {
-    CardForm: _CardForm__WEBPACK_IMPORTED_MODULE_0__["default"]
+    CardForm: _CardForm__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   props: {
-    title: {
-      type: String,
-      "default": "Card Title"
+    card: {
+      type: Object
     },
-    content: {
-      type: String,
-      "default": "Card Content"
+    column_id: {
+      type: Number
     },
     index: {
       type: Number
@@ -1989,18 +1992,23 @@ __webpack_require__.r(__webpack_exports__);
       this.$emit("deleteCard", index);
     },
     updateCard: function updateCard(event) {
-      var _cardTitle$value, _cardContent$value;
+      var _this = this;
 
-      var cardTitle = event.ref.querySelector('.form--card .card__form__title');
-      var cardContent = event.ref.querySelector('.form--card .card__form__content');
-      this.cardTitle = (_cardTitle$value = cardTitle.value) !== null && _cardTitle$value !== void 0 ? _cardTitle$value : this.cardTitle;
-      this.cardContent = (_cardContent$value = cardContent.value) !== null && _cardContent$value !== void 0 ? _cardContent$value : this.cardContent;
+      var cardId = event.ref.querySelector('.form--card .card__form__id').value;
+      var cardTitle = event.ref.querySelector('.form--card .card__form__title').value;
+      var cardContent = event.ref.querySelector('.form--card .card__form__content').value;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/cards/" + cardId.value, {
+        column_id: this.column_id,
+        title: cardTitle,
+        content: cardContent
+      }).then(function (response) {
+        _this.currentCard = response.data;
+      });
     }
   },
   data: function data() {
     return {
-      cardTitle: this.title,
-      cardContent: this.content
+      currentCard: this.card
     };
   }
 });
@@ -2030,19 +2038,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "CardForm",
   props: {
-    title: {
-      type: String
-    },
-    content: {
-      type: String
+    card: {
+      type: Object
     }
   },
   data: function data() {
     return {
-      cardContent: this.content
+      currentCard: this.card
     };
   },
   methods: {
@@ -2065,6 +2074,11 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Card__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Card */ "./resources/js/components/Card.vue");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+//
+//
+//
 //
 //
 //
@@ -2100,6 +2114,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Column",
   props: {
@@ -2114,7 +2129,10 @@ __webpack_require__.r(__webpack_exports__);
       type: Number
     },
     cards: {
-      type: Array
+      type: Array,
+      "default": function _default() {
+        return [];
+      }
     }
   },
   components: {
@@ -2125,25 +2143,37 @@ __webpack_require__.r(__webpack_exports__);
       this.$emit("deleteColumn", this.id);
     },
     addCard: function addCard() {
-      this.currentCards.unshift({
-        title: this.title + ": Card " + (this.currentCards.length + 1)
+      var _this = this;
+
+      // Add a card to the database and update component state
+      var now = new Date();
+      var card = {
+        title: "New Card " + now.toUTCString()
+      };
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post("/api/cards", {
+        title: card.title,
+        column_id: this.id
+      }).then(function (response) {
+        // Async update of card state
+        _this.currentCards.unshift({
+          title: response.data.title,
+          id: response.data.id
+        });
       });
     },
-    removeCard: function removeCard(index) {
-      this.currentCards.splice(index, 1);
+    removeCard: function removeCard(id) {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a["delete"]("/api/cards/" + id).then(function (response) {
+        return _this2.currentCards = _this2.currentCards.filter(function (card) {
+          return card.id !== id;
+        });
+      });
     }
   },
   data: function data() {
     return {
-      currentCards: [{
-        title: this.title + ": Card 1"
-      }, {
-        title: this.title + ": Card 2"
-      }, {
-        title: this.title + ": Card 3"
-      }, {
-        title: this.title + ": Card 4"
-      }]
+      currentCards: this.cards
     };
   }
 });
@@ -2160,6 +2190,9 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Column__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Column */ "./resources/js/components/Column.vue");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+//
 //
 //
 //
@@ -2188,6 +2221,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Page",
   props: {
@@ -2197,31 +2231,44 @@ __webpack_require__.r(__webpack_exports__);
     Column: _Column__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   data: function data() {
+    var _this = this;
+
+    var columnRequest = axios__WEBPACK_IMPORTED_MODULE_1___default.a.get("/api/columns").then(function (response) {
+      return _this.columns = response.data;
+    });
     return {
-      columns: [{
-        id: 0,
-        title: "Column 1"
-      }, {
-        id: 1,
-        title: "Column 2"
-      }, {
-        id: 2,
-        title: "Column 3"
-      }, {
-        id: 3,
-        title: "Column 4"
-      }]
+      columns: []
     };
   },
   methods: {
     addColumn: function addColumn() {
-      this.columns.push({
-        title: "Column " + (this.columns.length + 1),
-        id: this.columns.length
+      var _this2 = this;
+
+      // Add a column to the database and update component state
+      var now = new Date();
+      var column = {
+        title: "New Column " + now.toUTCString()
+      };
+      console.log(column);
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post("/api/columns", {
+        title: column.title
+      }).then(function (response) {
+        // Async update of
+        _this2.columns.push({
+          title: response.data.title,
+          id: response.data.id
+        });
       });
     },
-    removeColumn: function removeColumn(index) {
-      this.columns.splice(index, 1);
+    removeColumn: function removeColumn(id) {
+      var _this3 = this;
+
+      // Remove a column from the database and update component state
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a["delete"]("/api/columns/" + id).then(function (response) {
+        return _this3.columns = _this3.columns.filter(function (col) {
+          return col.id !== id;
+        });
+      });
     }
   }
 });
@@ -2259,7 +2306,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, ".card {\n  border: 1px solid black;\n  margin: 1rem 0;\n  padding: 2rem 0;\n  text-align: left;\n  max-height: 200px;\n  overflow: hidden;\n  position: relative;\n}\n.card__button--delete {\n  position: absolute;\n  top: 0.25rem;\n  right: 0.25rem;\n}\n.card__button--edit {\n  position: absolute;\n  top: 0.25rem;\n  right: 2.25rem;\n}\n.card__grabber {\n  position: absolute;\n  top: 0;\n  left: 0.2rem;\n  width: 1.5rem;\n  text-align: center;\n}\n.card__grabber.btn {\n  border: 0;\n  background: #eee;\n  padding: 0 0 0.35rem;\n  transform: rotate(90deg);\n}\n.card__title {\n  font-size: 1.2rem;\n  font-weight: 900;\n  text-align: left;\n  padding: 1rem;\n}\n.card__body {\n  padding: 1rem;\n}\n", ""]);
+exports.push([module.i, ".card {\n  border: 1px solid rgba(0, 0, 255, 0.3);\n  background-color: rgba(0, 0, 255, 0.3);\n  border-radius: 4px;\n  margin: 1rem 0;\n  padding: 0 0 1rem;\n  text-align: left;\n  max-height: 200px;\n  overflow: hidden;\n  position: relative;\n}\n.card__controls {\n  background-color: rgba(230, 230, 230, 0.3);\n  display: flex;\n  padding: 2px 0;\n  justify-content: flex-end;\n  position: relative;\n}\n.card__button {\n  margin: 0 2px;\n}\n.card__grabber {\n  position: absolute;\n  top: 0;\n  left: 0.2rem;\n  width: 29px;\n  height: 30px;\n  top: 3px;\n  line-height: 25px;\n  text-align: center;\n}\n.card__grabber.btn {\n  border: 0;\n  background: #eee;\n  padding: 0 0 0.35rem;\n  transform: rotate(90deg);\n}\n.card__title {\n  font-size: 1.2rem;\n  font-weight: 900;\n  text-align: left;\n  padding: 1rem;\n}\n.card__body {\n  padding: 1rem;\n}\n", ""]);
 
 // exports
 
@@ -2278,7 +2325,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "form {\n  padding: 1rem;\n  display: flex;\n  flex-direction: column;\n}\nform input,\nform textarea {\n  margin: 0 0 1rem;\n  border: 1px solid black;\n}\n", ""]);
+exports.push([module.i, "form {\n  padding: 1rem;\n  display: flex;\n  flex-direction: column;\n}\nform input,\nform textarea {\n  padding: .5rem;\n  margin: 0 0 1rem;\n  border: 1px solid black;\n}\n", ""]);
 
 // exports
 
@@ -2297,7 +2344,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, ".slide-fade-enter-active {\n  transition: all 0.3s ease;\n}\n.slide-fade-leave-active {\n  transition: all 0.8s ease-in-out;\n}\n.slide-fade-enter,\n.slide-fade-leave-to {\n  transform: scale3d(0.5, 0.5, 0.5);\n  opacity: 0;\n  max-height: 0;\n}\n.column {\n  flex-grow: 1;\n  border: 1px solid black;\n  border-radius: 4px;\n  padding: 2px;\n  margin: 0.25rem;\n  position: relative;\n  padding-top: 2rem;\n  display: flex;\n  flex-direction: column;\n}\n.column__button--delete {\n  position: absolute;\n  top: 0.25rem;\n  right: 0.25rem;\n}\n.column__button--add {\n  position: absolute;\n  top: 0.25rem;\n  left: 0.25rem;\n}\n", ""]);
+exports.push([module.i, ".slide-fade-enter-active {\n  transition: all 0.3s ease;\n}\n.slide-fade-leave-active {\n  transition: all 0.8s ease-in-out;\n}\n.slide-fade-enter,\n.slide-fade-leave-to {\n  transform: scale3d(0.5, 0.5, 0.5);\n  opacity: 0;\n  max-height: 0;\n}\n.column {\n  flex-grow: 1;\n  border: 1px solid black;\n  border-radius: 4px;\n  margin: 0.25rem;\n  position: relative;\n  padding-top: 0;\n  display: flex;\n  flex-direction: column;\n}\n.column__controls {\n  padding: 2px;\n  background-color: #fafafa;\n  display: flex;\n  justify-content: space-between;\n}\n.column__content {\n  padding: 2px;\n}\n", ""]);
 
 // exports
 
@@ -2316,7 +2363,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, ".bg--danger {\n  background-color: red;\n}\n.bg--success {\n  background-color: green;\n}\n.text--danger {\n  color: red;\n}\n.text--success {\n  color: green;\n}\n.text--white {\n  color: #fdfdfd;\n}\n.text--black {\n  color: #040404;\n}\n.text--center {\n  text-align: center;\n}\n.btn {\n  font-weight: bold;\n  border: 1px solid #333;\n  border-radius: 4px;\n  padding: 0.5rem 0.75rem;\n}\nh3 {\n  margin: 40px 0 0;\n}\nul {\n  list-style-type: none;\n  padding: 0;\n}\nli {\n  display: inline-block;\n  margin: 0 10px;\n}\na {\n  color: #42b983;\n}\n.columns {\n  display: flex;\n  width: 100%;\n  margin: auto;\n}\n", ""]);
+exports.push([module.i, ".bg--danger {\n  background-color: red;\n}\n.bg--success {\n  background-color: green;\n}\n.text--danger {\n  color: red;\n}\n.text--success {\n  color: green;\n}\n.text--white {\n  color: #fdfdfd;\n}\n.text--black {\n  color: #040404;\n}\n.text--center {\n  text-align: center;\n}\n.btn {\n  font-weight: bold;\n  border: 1px solid #333;\n  border-radius: 4px;\n  padding: 0.5rem 0.75rem;\n}\nh3 {\n  margin: 40px 0 0;\n}\nul {\n  list-style-type: none;\n  padding: 0;\n}\nli {\n  display: inline-block;\n  margin: 0 10px;\n}\na {\n  color: #42b983;\n}\n.columns__container {\n  display: flex;\n  width: 100%;\n  margin: auto;\n}\n.columns__message--message {\n  width: 100%;\n  clear: both;\n}\n", ""]);
 
 // exports
 
@@ -20766,45 +20813,48 @@ var render = function() {
     "div",
     { staticClass: "card" },
     [
-      _c(
-        "button",
-        {
-          staticClass: "btn card__button--delete bg--danger",
-          attrs: { title: "Delete Card" },
-          on: {
-            click: function($event) {
-              return _vm.deleteCard(_vm.index)
+      _c("div", { staticClass: "card__controls" }, [
+        _c(
+          "button",
+          {
+            staticClass: "btn card__button card__button--delete bg--danger",
+            attrs: { title: "Delete Card" },
+            on: {
+              click: function($event) {
+                return _vm.deleteCard(_vm.index)
+              }
             }
-          }
-        },
-        [_vm._v("\n    -\n  ")]
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "btn card__button--edit bg--success",
-          attrs: { title: "Edit Card" },
-          on: {
-            click: function($event) {
-              return _vm.$modal.show(_vm.cardTitle)
+          },
+          [_vm._v("\n      -\n      ")]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass:
+              "btn card__button card__button--edit bg--success text--white",
+            attrs: { title: "Edit Card" },
+            on: {
+              click: function($event) {
+                return _vm.$modal.show("card_" + _vm.currentCard.id)
+              }
             }
-          }
-        },
-        [_vm._v("\n    edit\n  ")]
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "card__grabber btn" }, [_vm._v("...")]),
+          },
+          [_vm._v("\n      edit\n      ")]
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "card__grabber btn" }, [_vm._v("...")])
+      ]),
       _vm._v(" "),
       _c("div", { staticClass: "card__title" }, [
-        _vm._v(_vm._s(_vm.cardTitle))
+        _vm._v(_vm._s(_vm.currentCard.title))
       ]),
       _vm._v(" "),
       _c(
         "Modal",
         {
           ref: "cardModal",
-          attrs: { name: _vm.cardTitle },
+          attrs: { name: "card_" + _vm.currentCard.id },
           on: { "before-close": _vm.updateCard }
         },
         [
@@ -20822,9 +20872,7 @@ var render = function() {
             )
           ]),
           _vm._v(" "),
-          _c("CardForm", {
-            attrs: { title: _vm.cardTitle, content: _vm.cardContent }
-          })
+          _c("CardForm", { attrs: { card: _vm.currentCard } })
         ],
         1
       )
@@ -20868,29 +20916,49 @@ var render = function() {
     },
     [
       _c("input", {
-        staticClass: "card__form__title",
-        attrs: { required: "", type: "text", name: "cardTitle", id: "" },
-        domProps: { value: _vm.title }
+        staticClass: "card__form__id",
+        attrs: {
+          required: "",
+          type: "hidden",
+          name: "cardTitle",
+          id: "card_id"
+        },
+        domProps: { value: _vm.currentCard.id }
       }),
+      _vm._v(" "),
+      _c("label", { attrs: { for: "card_title" } }, [_vm._v("Title")]),
+      _vm._v(" "),
+      _c("input", {
+        staticClass: "card__form__title",
+        attrs: {
+          required: "",
+          type: "text",
+          name: "cardTitle",
+          id: "card_title"
+        },
+        domProps: { value: _vm.currentCard.title }
+      }),
+      _vm._v(" "),
+      _c("label", { attrs: { for: "card_content" } }, [_vm._v("Content")]),
       _vm._v(" "),
       _c("textarea", {
         directives: [
           {
             name: "model",
             rawName: "v-model",
-            value: _vm.cardContent,
-            expression: "cardContent"
+            value: _vm.currentCard.content,
+            expression: "currentCard.content"
           }
         ],
         staticClass: "card__form__content",
-        attrs: { name: "cardContent", id: "" },
-        domProps: { value: _vm.cardContent },
+        attrs: { name: "cardContent", id: "card_content" },
+        domProps: { value: _vm.currentCard.content },
         on: {
           input: function($event) {
             if ($event.target.composing) {
               return
             }
-            _vm.cardContent = $event.target.value
+            _vm.$set(_vm.currentCard, "content", $event.target.value)
           }
         }
       }),
@@ -20930,38 +20998,47 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "column", attrs: { id: "column-" + _vm.index } },
+    { staticClass: "column", attrs: { id: "column-" + _vm.id } },
     [
-      _c(
-        "button",
-        {
-          staticClass: "btn column__button--delete bg--danger",
-          attrs: { title: "Delete Column" },
-          on: { click: _vm.deleteColumn }
-        },
-        [_vm._v("\n    -\n  ")]
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "btn column__button--add bg--success",
-          attrs: { title: "Add Card to Column" },
-          on: { click: _vm.addCard }
-        },
-        [_vm._v("\n    + Card\n  ")]
-      ),
+      _c("div", { staticClass: "column__controls" }, [
+        _c(
+          "button",
+          {
+            staticClass: "btn column__button--delete bg--danger",
+            attrs: { title: "Delete Column" },
+            on: { click: _vm.deleteColumn }
+          },
+          [_vm._v("\n      -\n      ")]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn column__button--add bg--success text--white",
+            attrs: { title: "Add Card to Column" },
+            on: { click: _vm.addCard }
+          },
+          [_vm._v("\n      + Card\n      ")]
+        )
+      ]),
       _vm._v(" "),
       _c("h2", { staticClass: "column__title" }, [_vm._v(_vm._s(_vm.title))]),
       _vm._v(" "),
       _c(
         "transition-group",
-        { attrs: { tag: "div", name: "slide-fade" } },
+        {
+          staticClass: "column__content",
+          attrs: { tag: "div", name: "slide-fade" }
+        },
         _vm._l(_vm.currentCards, function(card, index) {
           return _c("Card", {
             key: card.title,
-            attrs: { title: card.title, index: index },
-            on: { deleteCard: _vm.removeCard }
+            attrs: { card: card, column_id: _vm.id, index: card.id },
+            on: {
+              deleteCard: function($event) {
+                return _vm.removeCard(card.id)
+              }
+            }
           })
         }),
         1
@@ -21021,18 +21098,32 @@ var render = function() {
       [
         _c(
           "transition-group",
-          { staticClass: "columns", attrs: { tag: "div", name: "slide-fade" } },
+          {
+            staticClass: "columns__container",
+            attrs: { tag: "div", name: "slide-fade" }
+          },
           _vm._l(_vm.columns, function(column, index) {
             return _c("Column", {
-              key: column.title,
-              attrs: { id: index, index: index, title: column.title },
-              on: { deleteColumn: _vm.removeColumn }
+              key: "column-" + column.id,
+              attrs: {
+                id: column.id,
+                index: index,
+                cards: column.cards,
+                title: column.title
+              },
+              on: {
+                deleteColumn: function($event) {
+                  return _vm.removeColumn(column.id)
+                }
+              }
             })
           }),
           1
         ),
         _vm._v(" "),
-        _vm.columns.length === 0 ? _c("div", [_vm._m(0)]) : _vm._e()
+        _vm.columns.length === 0
+          ? _c("div", { staticClass: "columns__message--message" }, [_vm._m(0)])
+          : _vm._e()
       ],
       1
     )
