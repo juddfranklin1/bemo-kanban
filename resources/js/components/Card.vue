@@ -15,7 +15,13 @@
         >
         edit
         </button>
-        <div class="card__grabber btn">...</div>
+        <div class="card__movers">
+            <button @click.prevent="moveCard('up')" aria-label="move card up" class="flex--center card__mover card__mover--up">^</button>
+            <button @click.prevent="moveCard('left')" aria-label="move card left" class="flex--center card__mover card__mover--left"><</button>
+            <button @click.prevent="moveCard('right')" aria-label="move card right" class="flex--center card__mover card__mover--right">></button>
+            <button @click.prevent="moveCard('down')" aria-label="move card down" class="flex--center card__mover card__mover--down"></button>
+            <!-- <div class="card__grabber btn">...</div> -->
+        </div>
     </div>
     <div v-if="loading" class="loading flex--center">
         <PacmanLoader color="rgba(0,0,0,.2)" />
@@ -72,6 +78,9 @@ export default {
             this.currentCard = response.data;
             this.loading = false;
         });
+    },
+    moveCard(direction) {
+        console.log(direction);
     }
   },
   data() {
@@ -101,16 +110,53 @@ export default {
       justify-content: flex-end;
       position: relative;
   }
+
   &__button {
-      margin: 0 2px;
+    margin: 0 2px;
   }
-  &__grabber {
+
+  &__movers {
     position: absolute;
     top: 0;
     left: 0.2rem;
+    top: 3px;
+    width: 6rem;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  &__mover {
+      height: 1rem;
+      font-size: 0.8rem;
+      line-height: 0.7rem;
+      text-align: center;
+      background: #eee;
+      padding: 0.25rem;
+      &--up,
+      &--down {
+        width: 100%;
+      }
+      &--down::before {
+        content: "\2304";
+        line-height: .5rem;
+        margin-top: -.4rem;
+      }
+      &--left,
+      &--right {
+        margin: 0.2rem;
+        width: 2.8rem;
+        line-height: .6rem;
+      }
+      &--left {
+          margin-left: 0;
+      }
+      &--right {
+          margin-right: 0;
+      }
+  }
+
+  &__grabber {
     width: 29px;
     height: 30px;
-    top: 3px;
     line-height: 25px;
     text-align: center;
     &.btn {

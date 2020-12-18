@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Card;
+use App\Models\Column;
 use Illuminate\Http\Request;
 
 class CardController extends Controller
@@ -12,10 +13,16 @@ class CardController extends Controller
     }
 
     public function store(Request $request) {
+        $col = Column::firstWhere('id', $request->column_id);
         $card = new Card();
         $card->title = $request->title;
         $card->content = $request->content;
         $card->column_id = $request->column_id;
+        $card->sort_order = 0;
+        $col->cards->each(function($colCard){
+            $colCard->sort_order = $colCard->sort_order + 1;
+            $colCard->save();
+        });
         $card->save();
 
         return $card;

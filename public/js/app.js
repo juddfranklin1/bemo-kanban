@@ -1973,6 +1973,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2012,6 +2018,9 @@ __webpack_require__.r(__webpack_exports__);
         _this.currentCard = response.data;
         _this.loading = false;
       });
+    },
+    moveCard: function moveCard(direction) {
+      console.log(direction);
     }
   },
   data: function data() {
@@ -2368,6 +2377,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 
@@ -2458,7 +2470,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, ".card {\n  border: 1px solid rgba(0, 0, 255, 0.3);\n  background-color: rgba(0, 0, 255, 0.3);\n  border-radius: 4px;\n  margin: 1rem 0;\n  padding: 0 0 1rem;\n  text-align: left;\n  max-height: 200px;\n  overflow: hidden;\n  position: relative;\n}\n.card__controls {\n  background-color: rgba(230, 230, 230, 0.3);\n  display: flex;\n  padding: 2px 0;\n  justify-content: flex-end;\n  position: relative;\n}\n.card__button {\n  margin: 0 2px;\n}\n.card__grabber {\n  position: absolute;\n  top: 0;\n  left: 0.2rem;\n  width: 29px;\n  height: 30px;\n  top: 3px;\n  line-height: 25px;\n  text-align: center;\n}\n.card__grabber.btn {\n  border: 0;\n  background: #eee;\n  padding: 0 0 0.35rem;\n  transform: rotate(90deg);\n}\n.card__title {\n  font-size: 1.2rem;\n  font-weight: 900;\n  text-align: left;\n  padding: 1rem;\n}\n.card__body {\n  padding: 1rem;\n}\n", ""]);
+exports.push([module.i, ".card {\n  border: 1px solid rgba(0, 0, 255, 0.3);\n  background-color: rgba(0, 0, 255, 0.3);\n  border-radius: 4px;\n  margin: 1rem 0;\n  padding: 0 0 1rem;\n  text-align: left;\n  max-height: 200px;\n  overflow: hidden;\n  position: relative;\n}\n.card__controls {\n  background-color: rgba(230, 230, 230, 0.3);\n  display: flex;\n  padding: 2px 0;\n  justify-content: flex-end;\n  position: relative;\n}\n.card__button {\n  margin: 0 2px;\n}\n.card__movers {\n  position: absolute;\n  top: 0;\n  left: 0.2rem;\n  top: 3px;\n  width: 6rem;\n  display: flex;\n  flex-wrap: wrap;\n}\n.card__mover {\n  height: 1rem;\n  font-size: 0.8rem;\n  line-height: 0.7rem;\n  text-align: center;\n  background: #eee;\n  padding: 0.25rem;\n}\n.card__mover--up, .card__mover--down {\n  width: 100%;\n}\n.card__mover--down::before {\n  content: \"\\2304\";\n  line-height: .5rem;\n  margin-top: -.4rem;\n}\n.card__mover--left, .card__mover--right {\n  margin: 0.2rem;\n  width: 2.8rem;\n  line-height: .6rem;\n}\n.card__mover--left {\n  margin-left: 0;\n}\n.card__mover--right {\n  margin-right: 0;\n}\n.card__grabber {\n  width: 29px;\n  height: 30px;\n  line-height: 25px;\n  text-align: center;\n}\n.card__grabber.btn {\n  border: 0;\n  background: #eee;\n  padding: 0 0 0.35rem;\n  transform: rotate(90deg);\n}\n.card__title {\n  font-size: 1.2rem;\n  font-weight: 900;\n  text-align: left;\n  padding: 1rem;\n}\n.card__body {\n  padding: 1rem;\n}\n", ""]);
 
 // exports
 
@@ -2515,7 +2527,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, ".bg--danger {\n  background-color: red;\n}\n.bg--success {\n  background-color: green;\n}\n.text--danger {\n  color: red;\n}\n.text--success {\n  color: green;\n}\n.text--white {\n  color: #fdfdfd;\n}\n.text--black {\n  color: #040404;\n}\n.text--center {\n  text-align: center;\n}\n.btn {\n  font-weight: bold;\n  border: 1px solid #333;\n  border-radius: 4px;\n  padding: 0.5rem 0.75rem;\n}\nh3 {\n  margin: 40px 0 0;\n}\nul {\n  list-style-type: none;\n  padding: 0;\n}\nli {\n  display: inline-block;\n  margin: 0 10px;\n}\na {\n  color: #42b983;\n}\n.columns__container {\n  display: flex;\n  width: 100%;\n  margin: auto;\n}\n.columns__message--message {\n  width: 100%;\n  clear: both;\n}\n", ""]);
+exports.push([module.i, ".border--danger {\n  border: 1px solid red;\n}\n.border--success {\n  border: 1px solid green;\n}\n.border--black {\n  border: 1px solid #040404;\n}\n.bg--danger {\n  background-color: red;\n}\n.bg--success {\n  background-color: green;\n}\n.text--danger {\n  color: red;\n}\n.text--success {\n  color: green;\n}\n.text--white {\n  color: #fdfdfd;\n}\n.text--black {\n  color: #040404;\n}\n.text--center {\n  text-align: center;\n}\n.btn {\n  font-weight: bold;\n  border-radius: 4px;\n  padding: 0.5rem 0.75rem;\n}\n.btn--abs-tr-corner {\n  position: absolute;\n  top: .5rem;\n  right: .5rem;\n}\nh3 {\n  margin: 40px 0 0;\n}\nul {\n  list-style-type: none;\n  padding: 0;\n}\nli {\n  display: inline-block;\n  margin: 0 10px;\n}\na {\n  color: #42b983;\n}\n.columns__container {\n  display: flex;\n  width: 100%;\n  margin: auto;\n}\n.columns__message--message {\n  width: 100%;\n  clear: both;\n}\n", ""]);
 
 // exports
 
@@ -21044,7 +21056,63 @@ var render = function() {
           [_vm._v("\n      edit\n      ")]
         ),
         _vm._v(" "),
-        _c("div", { staticClass: "card__grabber btn" }, [_vm._v("...")])
+        _c("div", { staticClass: "card__movers" }, [
+          _c(
+            "button",
+            {
+              staticClass: "flex--center card__mover card__mover--up",
+              attrs: { "aria-label": "move card up" },
+              on: {
+                click: function($event) {
+                  $event.preventDefault()
+                  return _vm.moveCard("up")
+                }
+              }
+            },
+            [_vm._v("^")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "flex--center card__mover card__mover--left",
+              attrs: { "aria-label": "move card left" },
+              on: {
+                click: function($event) {
+                  $event.preventDefault()
+                  return _vm.moveCard("left")
+                }
+              }
+            },
+            [_vm._v("<")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "flex--center card__mover card__mover--right",
+              attrs: { "aria-label": "move card right" },
+              on: {
+                click: function($event) {
+                  $event.preventDefault()
+                  return _vm.moveCard("right")
+                }
+              }
+            },
+            [_vm._v(">")]
+          ),
+          _vm._v(" "),
+          _c("button", {
+            staticClass: "flex--center card__mover card__mover--down",
+            attrs: { "aria-label": "move card down" },
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                return _vm.moveCard("down")
+              }
+            }
+          })
+        ])
       ]),
       _vm._v(" "),
       _vm.loading
@@ -21354,6 +21422,16 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "page text--black" }, [
     _c("h1", [_vm._v(_vm._s(_vm.msg))]),
+    _vm._v(" "),
+    _c(
+      "a",
+      {
+        staticClass:
+          "btn--abs-tr-corner text--success border--success btn bg--white",
+        attrs: { href: "/db-dump" }
+      },
+      [_vm._v("\n      Dump the Db\n  ")]
+    ),
     _vm._v(" "),
     _c(
       "button",

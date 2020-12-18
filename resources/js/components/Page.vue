@@ -1,6 +1,9 @@
 <template>
   <div class="page text--black">
     <h1>{{ msg }}</h1>
+    <a class="btn--abs-tr-corner text--success border--success btn bg--white" href="/db-dump">
+        Dump the Db
+    </a>
     <button
       @click="addColumn"
       class="btn bg--success text--white button--add-column"
@@ -82,6 +85,17 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
+.border {
+  &--danger {
+    border: 1px solid red;
+  }
+  &--success {
+    border: 1px solid green;
+  }
+  &--black {
+    border: 1px solid #040404;
+  }
+}
 .bg {
   &--danger {
     background-color: red;
@@ -109,9 +123,13 @@ export default {
 }
 .btn {
   font-weight: bold;
-  border: 1px solid #333;
   border-radius: 4px;
   padding: 0.5rem 0.75rem;
+  &--abs-tr-corner {
+      position: absolute;
+      top: .5rem;
+      right: .5rem;
+  }
 }
 h3 {
   margin: 40px 0 0;
