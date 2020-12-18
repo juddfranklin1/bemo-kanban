@@ -8,24 +8,27 @@ use Illuminate\Http\Request;
 class ColumnController extends Controller
 {
     public function index(Request $request) {
-        return Column::all()->loadMissing('cards');
+        // Load all columns with cards and nested column data for ease of moving cards
+        return Column::with('cards.column')->orderBy('sort_order')->get();
     }
 
     public function store(Request $request) {
         $column = new Column();
         $column->title = $request->title;
+        $column->sort_order = count(Column::all());
         $column->save();
 
         return $column;
     }
 
     public function show(Request $request, $column) {
-        return Column::where('id',$column)->first();
+        return Column::with('cards.column')->firstOrFail($column);
     }
 
     public function destroy($column)
     {
         $columnItem = Column::find($column);
+        $columnItem->cards()->delete();
         $columnItem->delete();
         return $column;
     }

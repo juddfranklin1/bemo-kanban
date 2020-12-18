@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card" ref="card">
     <div class="card__controls">
         <button
         class="btn card__button card__button--delete bg--danger"
@@ -51,10 +51,10 @@ export default {
   },
   props: {
     card: {
-        type: Object
+      type: Object
     },
     column_id: {
-        type: Number
+      type: Number
     },
     index: {
       type: Number
@@ -70,17 +70,59 @@ export default {
       const cardTitle = event.ref.querySelector('.form--card .card__form__title').value;
       const cardContent = event.ref.querySelector('.form--card .card__form__content').value;
       Axios.post("/api/cards/" + cardId, {
-          column_id: this.column_id,
-          title: cardTitle,
-          content: cardContent
+        column_id: this.column_id,
+        title: cardTitle,
+        content: cardContent
       })
         .then(response => {
-            this.currentCard = response.data;
-            this.loading = false;
+          this.currentCard = response.data;
+          this.loading = false;
         });
     },
     moveCard(direction) {
-        console.log(direction);
+      if(direction === 'left') {
+        if(this.currentCard.column.sort_order > 0) {
+          this.currentCard.column_id -= 1;
+        } else {
+          return;
+        }
+      }
+
+      if(direction === 'right') {
+        const columnCount = document.querySelectorAll('.columns').length;
+        if(this.currentCard.column.sort_order < columnCount) {
+          this.currentCard.column_id += 1;
+        } else {
+          return;
+        }
+      }
+
+      if(direction === 'up') {
+        if(this.currentCard.sort_order > 0) {
+          this.currentCard.sort_order -= 1;
+        } else {
+          return;
+        }
+      }
+
+      if(direction === 'down') {
+        const cardCount = this.$refs.card.parentNode.children.length;
+        if(this.currentCard.sort_order < cardCount - 1) {
+          this.currentCard.sort_order += 1;
+        } else {
+          return;
+        }
+      }
+
+      this.loading = true;
+
+      console.log(this.currentCard);
+
+      Axios.post("/api/cards/" + this.currentCard.id, this.currentCard)
+      .then(response => {
+        this.currentCard = response.data;
+        this.loading = false;
+      });
     }
   },
   data() {

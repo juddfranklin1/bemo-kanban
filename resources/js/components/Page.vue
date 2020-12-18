@@ -64,15 +64,12 @@ export default {
       const column = {
         title: "New Column " + now.toUTCString()
       };
-      console.log(column);
-      Axios.post("/api/columns", {
-          title: column.title
-      })
-      .then(response => {// Async update of
-        this.columns.push({
-        title: response.data.title,
-        id: response.data.id
-      })
+      Axios.post("/api/columns", column)
+        .then(response => {// Async update of
+          this.columns.push({
+          title: response.data.title,
+          id: response.data.id
+        });
     });
     },
     removeColumn(id) {// Remove a column from the database and update component state

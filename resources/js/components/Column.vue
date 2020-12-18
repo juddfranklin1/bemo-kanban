@@ -74,10 +74,7 @@ export default {
         column_id: this.id
       })
       .then(response => {// Async update of card state
-        this.currentCards.unshift({
-          title: response.data.title,
-          id: response.data.id
-        })
+        this.currentCards.unshift(response.data)// Let Laravel deliver the relevant model data
       });
     },
     removeCard(id) {

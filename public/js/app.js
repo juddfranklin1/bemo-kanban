@@ -2020,7 +2020,50 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     moveCard: function moveCard(direction) {
-      console.log(direction);
+      var _this2 = this;
+
+      if (direction === 'left') {
+        if (this.currentCard.column.sort_order > 0) {
+          this.currentCard.column_id -= 1;
+        } else {
+          return;
+        }
+      }
+
+      if (direction === 'right') {
+        var columnCount = document.querySelectorAll('.columns').length;
+
+        if (this.currentCard.column.sort_order < columnCount) {
+          this.currentCard.column_id += 1;
+        } else {
+          return;
+        }
+      }
+
+      if (direction === 'up') {
+        if (this.currentCard.sort_order > 0) {
+          this.currentCard.sort_order -= 1;
+        } else {
+          return;
+        }
+      }
+
+      if (direction === 'down') {
+        var cardCount = this.$refs.card.parentNode.children.length;
+
+        if (this.currentCard.sort_order < cardCount - 1) {
+          this.currentCard.sort_order += 1;
+        } else {
+          return;
+        }
+      }
+
+      this.loading = true;
+      console.log(this.currentCard);
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/cards/" + this.currentCard.id, this.currentCard).then(function (response) {
+        _this2.currentCard = response.data;
+        _this2.loading = false;
+      });
     }
   },
   data: function data() {
@@ -2173,10 +2216,8 @@ __webpack_require__.r(__webpack_exports__);
         column_id: this.id
       }).then(function (response) {
         // Async update of card state
-        _this.currentCards.unshift({
-          title: response.data.title,
-          id: response.data.id
-        });
+        _this.currentCards.unshift(response.data); // Let Laravel deliver the relevant model data
+
       });
     },
     removeCard: function removeCard(id) {
@@ -2413,10 +2454,7 @@ __webpack_require__.r(__webpack_exports__);
       var column = {
         title: "New Column " + now.toUTCString()
       };
-      console.log(column);
-      axios__WEBPACK_IMPORTED_MODULE_2___default.a.post("/api/columns", {
-        title: column.title
-      }).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_2___default.a.post("/api/columns", column).then(function (response) {
         // Async update of
         _this2.columns.push({
           title: response.data.title,
@@ -20995,7 +21033,11 @@ var render = function() {
     [
       _c("img", { attrs: { alt: "Vue logo", src: "/images/bemo-logo.png" } }),
       _vm._v(" "),
-      _c("Page", { attrs: { msg: "BeMo KanBan" } })
+      _c("Page", {
+        attrs: {
+          msg: "Thank you for the opportunity to share this work with you!"
+        }
+      })
     ],
     1
   )
@@ -21024,7 +21066,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "card" },
+    { ref: "card", staticClass: "card" },
     [
       _c("div", { staticClass: "card__controls" }, [
         _c(

@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class CardController extends Controller
 {
     public function index(Request $request) {
-        return Card::all();
+        return Card::all()->with('column');
     }
 
     public function store(Request $request) {
@@ -25,11 +25,11 @@ class CardController extends Controller
         });
         $card->save();
 
-        return $card;
+        return $card->loadMissing('column');
     }
 
     public function show(Request $request, $card) {
-        return Card::where('id',$id)->first();
+        return Card::with('column')->findOrFail($card)->first();
     }
 
     public function destroy($card)
@@ -40,10 +40,11 @@ class CardController extends Controller
     }
 
     public function update(Request $request, $card) {
-        $cardItem = Card::findOrFail($card);
+        $cardItem = Card::with('column')->findOrFail($card);
         $cardItem->title = $request->title;
         $cardItem->content = $request->content;
         $cardItem->column_id = $request->column_id;
+        $cardItem->sort_order = $request->sort_order;
         $cardItem->save();
         return $cardItem;
     }

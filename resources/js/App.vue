@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="/images/bemo-logo.png" />
-    <Page msg="BeMo KanBan" />
+    <Page msg="Thank you for the opportunity to share this work with you!" />
   </div>
 </template>
 
