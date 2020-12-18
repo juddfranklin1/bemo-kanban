@@ -2007,14 +2007,9 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       this.loading = true;
-      var cardId = event.ref.querySelector('.form--card .card__form__id').value;
-      var cardTitle = event.ref.querySelector('.form--card .card__form__title').value;
-      var cardContent = event.ref.querySelector('.form--card .card__form__content').value;
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/cards/" + cardId, {
-        column_id: this.column_id,
-        title: cardTitle,
-        content: cardContent
-      }).then(function (response) {
+      this.currentCard.title = event.ref.querySelector('.form--card .card__form__title').value;
+      this.currentCard.content = event.ref.querySelector('.form--card .card__form__content').value;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/cards/" + this.currentCard.id, this.currentCard).then(function (response) {
         _this.currentCard = response.data;
         _this.loading = false;
       });
@@ -2085,7 +2080,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
 //
 //
 //
@@ -21237,17 +21231,6 @@ var render = function() {
       }
     },
     [
-      _c("input", {
-        staticClass: "card__form__id",
-        attrs: {
-          required: "",
-          type: "hidden",
-          name: "cardTitle",
-          id: "card_id"
-        },
-        domProps: { value: _vm.currentCard.id }
-      }),
-      _vm._v(" "),
       _c("label", { attrs: { for: "card_title" } }, [_vm._v("Title")]),
       _vm._v(" "),
       _c("input", {
@@ -21264,25 +21247,9 @@ var render = function() {
       _c("label", { attrs: { for: "card_content" } }, [_vm._v("Content")]),
       _vm._v(" "),
       _c("textarea", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.currentCard.content,
-            expression: "currentCard.content"
-          }
-        ],
         staticClass: "card__form__content",
         attrs: { name: "cardContent", id: "card_content" },
-        domProps: { value: _vm.currentCard.content },
-        on: {
-          input: function($event) {
-            if ($event.target.composing) {
-              return
-            }
-            _vm.$set(_vm.currentCard, "content", $event.target.value)
-          }
-        }
+        domProps: { value: _vm.currentCard.content }
       }),
       _vm._v(" "),
       _c(

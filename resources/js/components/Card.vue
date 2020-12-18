@@ -66,14 +66,9 @@ export default {
     },
     updateCard(event) {
       this.loading = true;
-      const cardId = event.ref.querySelector('.form--card .card__form__id').value;
-      const cardTitle = event.ref.querySelector('.form--card .card__form__title').value;
-      const cardContent = event.ref.querySelector('.form--card .card__form__content').value;
-      Axios.post("/api/cards/" + cardId, {
-        column_id: this.column_id,
-        title: cardTitle,
-        content: cardContent
-      })
+      this.currentCard.title = event.ref.querySelector('.form--card .card__form__title').value;
+      this.currentCard.content = event.ref.querySelector('.form--card .card__form__content').value;
+      Axios.post("/api/cards/" + this.currentCard.id, this.currentCard)
         .then(response => {
           this.currentCard = response.data;
           this.loading = false;
