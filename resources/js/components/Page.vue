@@ -7,7 +7,10 @@
     >
       Add Column
     </button>
-    <div class="columns">
+    <div class="loading flex--center" v-if="loading">
+        <PacmanLoader />
+    </div>
+    <div v-if="!loading" class="columns">
       <transition-group tag="div" name="slide-fade" class="columns__container">
         <Column
           v-for="(column, index) in columns"
@@ -28,6 +31,7 @@
 
 <script>
 import Column from "./Column";
+import PacmanLoader from "./PacmanLoader";
 import Axios from "axios";
 
 export default {
@@ -36,13 +40,18 @@ export default {
     msg: String
   },
   components: {
-    Column
+    Column,
+    PacmanLoader
   },
   data() {
     const columnRequest = Axios.get("/api/columns")
-                            .then(response => this.columns = response.data);
+                            .then(response => {
+                                this.columns = response.data;
+                                this.loading = false;
+                            });
 
     return {
+      loading: true,
       columns: []
     };
   },

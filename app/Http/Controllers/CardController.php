@@ -38,6 +38,6 @@ class CardController extends Controller
         $cardItem->content = $request->content;
         $cardItem->column_id = $request->column_id;
         $cardItem->save();
-        return $card;
+        return $cardItem;
     }
 }

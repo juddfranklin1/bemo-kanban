@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="/images/logo.png" />
+    <img alt="Vue logo" src="/images/bemo-logo.png" />
     <Page msg="BeMo KanBan" />
   </div>
 </template>
@@ -24,5 +24,13 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.loading {
+    padding: 1rem;
+}
+.flex--center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>

@@ -17,10 +17,13 @@
         </button>
         <div class="card__grabber btn">...</div>
     </div>
-    <div class="card__title">{{ currentCard.title }}</div>
+    <div v-if="loading" class="loading flex--center">
+        <PacmanLoader color="rgba(0,0,0,.2)" />
+    </div>
+    <div v-if="!loading" class="card__title">{{ currentCard.title }}</div>
     <Modal :name="'card_'+ currentCard.id" @before-close="updateCard" ref="cardModal">
       <div slot="top-right">
-        <button @click="$modal.hide('foo')">
+        <button @click="$modal.hide('card_' + currentCard.id)">
           hide modal
         </button>
       </div>
@@ -32,11 +35,13 @@
 <script>
 import Axios from "axios";
 import CardForm from "./CardForm";
+import PacmanLoader from "./PacmanLoader";
 
 export default {
   name: "Card",
   components: {
-    CardForm
+    CardForm,
+    PacmanLoader
   },
   props: {
     card: {
@@ -54,21 +59,24 @@ export default {
       this.$emit("deleteCard", index);
     },
     updateCard(event) {
+      this.loading = true;
       const cardId = event.ref.querySelector('.form--card .card__form__id').value;
       const cardTitle = event.ref.querySelector('.form--card .card__form__title').value;
       const cardContent = event.ref.querySelector('.form--card .card__form__content').value;
-      Axios.post("/api/cards/" + cardId.value, {
+      Axios.post("/api/cards/" + cardId, {
           column_id: this.column_id,
           title: cardTitle,
           content: cardContent
       })
         .then(response => {
             this.currentCard = response.data;
+            this.loading = false;
         });
     }
   },
   data() {
     return {
+      loading: false,
       currentCard: this.card
     }
   }

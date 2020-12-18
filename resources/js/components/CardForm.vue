@@ -31,7 +31,7 @@ export default {
   },
   methods: {
     updateCard($e) {
-      this.$modal.hide(this.title);
+      this.$modal.hide('card_' + this.currentCard.id);
       this.$emit("test-event", $e.target);
     }
   }
