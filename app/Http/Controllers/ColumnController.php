@@ -42,6 +42,11 @@ class ColumnController extends Controller
         $columnItem = Column::find($column);
         $columnItem->cards()->delete();
         $columnItem->delete();
+        $columns = Column::all();
+        $columns->each(function($col, $index) {
+            $col->sort_order = $index;
+            $col->save();
+        });
         return $column;
     }
 

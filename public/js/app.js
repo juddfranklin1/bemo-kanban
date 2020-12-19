@@ -2032,11 +2032,11 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       if (direction === 'right') {
-        console.log(this.currentCard);
+        console.log(this.currentCard.column.sort_order, columnCount);
 
         if (this.currentCard.column.sort_order < columnCount - 1) {
           var nextColEl = currentColEl.nextSibling;
-          this.currentCard.column_id = nextColEl.dataset.colId;
+          this.currentCard.column_id = nextColEl ? nextColEl.dataset.colId : this.currentCard.column_id;
         } else {
           return;
         }
