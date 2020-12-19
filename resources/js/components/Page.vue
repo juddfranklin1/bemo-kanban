@@ -17,6 +17,7 @@
       <transition-group tag="div" name="slide-fade" class="columns__container">
         <Column
           v-for="(column, index) in columns"
+          @reloadAllCols="reloadColumns"
           @deleteColumn="removeColumn(column.id)"
           :key="'column-' + column.id"
           :id="column.id"
@@ -70,7 +71,13 @@ export default {
           title: response.data.title,
           id: response.data.id
         });
-    });
+      });
+    },
+    reloadColumns() {
+        Axios.get("/api/columns/")
+          .then(response => {
+            this.columns = response.data
+          })
     },
     removeColumn(id) {// Remove a column from the database and update component state
       Axios.delete("/api/columns/" + id)

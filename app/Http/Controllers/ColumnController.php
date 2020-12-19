@@ -22,7 +22,9 @@ class ColumnController extends Controller
     }
 
     public function show(Request $request, $column) {
-        return Column::with('cards.column')->firstOrFail($column);
+
+        $col = Column::with('cards.column')->firstWhere('id',$column);
+        return $col;
     }
 
     public function destroy($column)

@@ -17,11 +17,12 @@
         </button>
     </div>
     <h2 class="column__title">{{ title }}</h2>
-    <transition-group tag="div" class="column__content" name="slide-fade">
+    <transition-group tag="div" class="column__content" :id="'column_container_' + id" name="slide-fade">
       <Card
+        @reloadColumn="reloadColumn"
         v-for="(card, index) in currentCards"
         @deleteCard="removeCard(card.id)"
-        :key="card.title"
+        :key="'card-' + card.id"
         :card="card"
         :column_id="id"
         :index="card.id"
@@ -76,6 +77,16 @@ export default {
       .then(response => {// Async update of card state
         this.currentCards.unshift(response.data)// Let Laravel deliver the relevant model data
       });
+    },
+    reloadColumn(payload) {
+        if(payload === this.id) {
+            Axios.get("/api/columns/" + this.id)
+            .then(response => {
+                this.currentCards = response.data.cards
+            })
+        } else {
+            this.$emit('reloadAllCols');
+        }
     },
     removeCard(id) {
       Axios.delete("/api/cards/" + id)

@@ -75,6 +75,7 @@ export default {
         });
     },
     moveCard(direction) {
+      const existingColumn = this.currentCard.column_id;
       if(direction === 'left') {
         if(this.currentCard.column.sort_order > 0) {
           this.currentCard.column_id -= 1;
@@ -84,7 +85,7 @@ export default {
       }
 
       if(direction === 'right') {
-        const columnCount = document.querySelectorAll('.columns').length;
+        const columnCount = document.querySelectorAll('.column').length;
         if(this.currentCard.column.sort_order < columnCount - 1) {
           this.currentCard.column_id += 1;
         } else {
@@ -111,12 +112,17 @@ export default {
 
       this.loading = true;
 
-      console.log(this.currentCard);
-
       Axios.post("/api/cards/" + this.currentCard.id, this.currentCard)
       .then(response => {
-        this.currentCard = response.data;
-        this.loading = false;
+        if(existingColumn !== response.data.column_id) {// Pass event up to the page to reload all cols
+            this.$emit('reloadColumn');
+        } else {
+            this.$emit('reloadColumn', response.data.column_id);
+        }
+      })
+      .catch(err => {
+          console.error(err);
+          this.loading = false;
       });
     }
   },
@@ -153,10 +159,6 @@ export default {
   }
 
   &__movers {
-    position: absolute;
-    top: 0;
-    left: 0.2rem;
-    top: 3px;
     width: 6rem;
     display: flex;
     flex-wrap: wrap;

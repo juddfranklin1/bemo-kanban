@@ -2017,6 +2017,8 @@ __webpack_require__.r(__webpack_exports__);
     moveCard: function moveCard(direction) {
       var _this2 = this;
 
+      var existingColumn = this.currentCard.column_id;
+
       if (direction === 'left') {
         if (this.currentCard.column.sort_order > 0) {
           this.currentCard.column_id -= 1;
@@ -2026,7 +2028,7 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       if (direction === 'right') {
-        var columnCount = document.querySelectorAll('.columns').length;
+        var columnCount = document.querySelectorAll('.column').length;
 
         if (this.currentCard.column.sort_order < columnCount - 1) {
           this.currentCard.column_id += 1;
@@ -2054,9 +2056,15 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       this.loading = true;
-      console.log(this.currentCard);
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/cards/" + this.currentCard.id, this.currentCard).then(function (response) {
-        _this2.currentCard = response.data;
+        if (existingColumn !== response.data.column_id) {
+          // Pass event up to the page to reload all cols
+          _this2.$emit('reloadColumn');
+        } else {
+          _this2.$emit('reloadColumn', response.data.column_id);
+        }
+      })["catch"](function (err) {
+        console.error(err);
         _this2.loading = false;
       });
     }
@@ -2168,6 +2176,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2214,11 +2223,22 @@ __webpack_require__.r(__webpack_exports__);
 
       });
     },
-    removeCard: function removeCard(id) {
+    reloadColumn: function reloadColumn(payload) {
       var _this2 = this;
 
+      if (payload === this.id) {
+        axios__WEBPACK_IMPORTED_MODULE_1___default.a.get("/api/columns/" + this.id).then(function (response) {
+          _this2.currentCards = response.data.cards;
+        });
+      } else {
+        this.$emit('reloadAllCols');
+      }
+    },
+    removeCard: function removeCard(id) {
+      var _this3 = this;
+
       axios__WEBPACK_IMPORTED_MODULE_1___default.a["delete"]("/api/cards/" + id).then(function (response) {
-        return _this2.currentCards = _this2.currentCards.filter(function (card) {
+        return _this3.currentCards = _this3.currentCards.filter(function (card) {
           return card.id !== id;
         });
       });
@@ -2415,6 +2435,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 
@@ -2456,12 +2477,19 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
     },
-    removeColumn: function removeColumn(id) {
+    reloadColumns: function reloadColumns() {
       var _this3 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_2___default.a.get("/api/columns/").then(function (response) {
+        _this3.columns = response.data;
+      });
+    },
+    removeColumn: function removeColumn(id) {
+      var _this4 = this;
 
       // Remove a column from the database and update component state
       axios__WEBPACK_IMPORTED_MODULE_2___default.a["delete"]("/api/columns/" + id).then(function (response) {
-        return _this3.columns = _this3.columns.filter(function (col) {
+        return _this4.columns = _this4.columns.filter(function (col) {
           return col.id !== id;
         });
       });
@@ -2502,7 +2530,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, ".card {\n  border: 1px solid rgba(0, 0, 255, 0.3);\n  background-color: rgba(0, 0, 255, 0.3);\n  border-radius: 4px;\n  margin: 1rem 0;\n  padding: 0 0 1rem;\n  text-align: left;\n  max-height: 200px;\n  overflow: hidden;\n  position: relative;\n}\n.card__controls {\n  background-color: rgba(230, 230, 230, 0.3);\n  display: flex;\n  padding: 2px 0;\n  justify-content: flex-end;\n  position: relative;\n}\n.card__button {\n  margin: 0 2px;\n}\n.card__movers {\n  position: absolute;\n  top: 0;\n  left: 0.2rem;\n  top: 3px;\n  width: 6rem;\n  display: flex;\n  flex-wrap: wrap;\n}\n.card__mover {\n  height: 1rem;\n  font-size: 0.8rem;\n  line-height: 0.7rem;\n  text-align: center;\n  background: #eee;\n  padding: 0.25rem;\n}\n.card__mover--up, .card__mover--down {\n  width: 100%;\n}\n.card__mover--down::before {\n  content: \"\\2304\";\n  line-height: .5rem;\n  margin-top: -.4rem;\n}\n.card__mover--left, .card__mover--right {\n  margin: 0.2rem;\n  width: 2.8rem;\n  line-height: .6rem;\n}\n.card__mover--left {\n  margin-left: 0;\n}\n.card__mover--right {\n  margin-right: 0;\n}\n.card__grabber {\n  width: 29px;\n  height: 30px;\n  line-height: 25px;\n  text-align: center;\n}\n.card__grabber.btn {\n  border: 0;\n  background: #eee;\n  padding: 0 0 0.35rem;\n  transform: rotate(90deg);\n}\n.card__title {\n  font-size: 1.2rem;\n  font-weight: 900;\n  text-align: left;\n  padding: 1rem;\n}\n.card__body {\n  padding: 1rem;\n}\n", ""]);
+exports.push([module.i, ".card {\n  border: 1px solid rgba(0, 0, 255, 0.3);\n  background-color: rgba(0, 0, 255, 0.3);\n  border-radius: 4px;\n  margin: 1rem 0;\n  padding: 0 0 1rem;\n  text-align: left;\n  max-height: 200px;\n  overflow: hidden;\n  position: relative;\n}\n.card__controls {\n  background-color: rgba(230, 230, 230, 0.3);\n  display: flex;\n  padding: 2px 0;\n  justify-content: flex-end;\n  position: relative;\n}\n.card__button {\n  margin: 0 2px;\n}\n.card__movers {\n  width: 6rem;\n  display: flex;\n  flex-wrap: wrap;\n}\n.card__mover {\n  height: 1rem;\n  font-size: 0.8rem;\n  line-height: 0.7rem;\n  text-align: center;\n  background: #eee;\n  padding: 0.25rem;\n}\n.card__mover--up, .card__mover--down {\n  width: 100%;\n}\n.card__mover--down::before {\n  content: \"\\2304\";\n  line-height: .5rem;\n  margin-top: -.4rem;\n}\n.card__mover--left, .card__mover--right {\n  margin: 0.2rem;\n  width: 2.8rem;\n  line-height: .6rem;\n}\n.card__mover--left {\n  margin-left: 0;\n}\n.card__mover--right {\n  margin-right: 0;\n}\n.card__grabber {\n  width: 29px;\n  height: 30px;\n  line-height: 25px;\n  text-align: center;\n}\n.card__grabber.btn {\n  border: 0;\n  background: #eee;\n  padding: 0 0 0.35rem;\n  transform: rotate(90deg);\n}\n.card__title {\n  font-size: 1.2rem;\n  font-weight: 900;\n  text-align: left;\n  padding: 1rem;\n}\n.card__body {\n  padding: 1rem;\n}\n", ""]);
 
 // exports
 
@@ -21317,13 +21345,18 @@ var render = function() {
         "transition-group",
         {
           staticClass: "column__content",
-          attrs: { tag: "div", name: "slide-fade" }
+          attrs: {
+            tag: "div",
+            id: "column_container_" + _vm.id,
+            name: "slide-fade"
+          }
         },
         _vm._l(_vm.currentCards, function(card, index) {
           return _c("Card", {
-            key: card.title,
+            key: "card-" + card.id,
             attrs: { card: card, column_id: _vm.id, index: card.id },
             on: {
+              reloadColumn: _vm.reloadColumn,
               deleteCard: function($event) {
                 return _vm.removeCard(card.id)
               }
@@ -21481,6 +21514,7 @@ var render = function() {
                     title: column.title
                   },
                   on: {
+                    reloadAllCols: _vm.reloadColumns,
                     deleteColumn: function($event) {
                       return _vm.removeColumn(column.id)
                     }
