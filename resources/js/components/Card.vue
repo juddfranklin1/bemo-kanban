@@ -17,8 +17,8 @@
         </button>
         <div class="card__movers">
             <button @click.prevent="moveCard('up')" aria-label="move card up" class="flex--center card__mover card__mover--up">^</button>
-            <button @click.prevent="moveCard('left')" aria-label="move card left" class="flex--center card__mover card__mover--left"><</button>
-            <button @click.prevent="moveCard('right')" aria-label="move card right" class="flex--center card__mover card__mover--right">></button>
+            <button @click.prevent="moveCard('left')" aria-label="move card left" class="flex--center card__mover card__mover--left">&laquo;</button>
+            <button @click.prevent="moveCard('right')" aria-label="move card right" class="flex--center card__mover card__mover--right">&raquo;</button>
             <button @click.prevent="moveCard('down')" aria-label="move card down" class="flex--center card__mover card__mover--down"></button>
             <!-- <div class="card__grabber btn">...</div> -->
         </div>
@@ -26,6 +26,7 @@
     <div v-if="loading" class="loading flex--center">
         <PacmanLoader color="rgba(0,0,0,.2)" />
     </div>
+    {{ currentCard.sort_order }}
     <div v-if="!loading" class="card__title">{{ currentCard.title }}</div>
     <Modal :name="'card_'+ currentCard.id" @before-close="updateCard" ref="cardModal">
       <div slot="top-right">
@@ -96,17 +97,16 @@ export default {
       }
 
       if(direction === 'up') {
-          if(cardCount > 1 && this.currentCard.sort_order > 0) {
-              this.currentCard.sort_order -= 1;
+        if(cardCount > 1 && this.currentCard.sort_order > 0) {
+          this.currentCard.sort_order = this.currentCard.sort_order - 1;
         } else {
-            return;
+          return;
         }
       }
 
       if(direction === 'down') {
         if(cardCount > 1 && this.currentCard.sort_order < cardCount - 1) {
-          console.log(cardCount, this.currentCard.sort_order);
-          this.currentCard.sort_order += 1;
+          this.currentCard.sort_order = this.currentCard.sort_order + 1;
         } else {
           return;
         }
@@ -116,9 +116,9 @@ export default {
 
       Axios.post("api/cards/" + this.currentCard.id, this.currentCard)
       .then(response => {
-        if(existingColumn !== response.data.column_id) {// Pass event up to the page to reload all cols
+          if(existingColumn !== response.data.column_id) {// Pass event up to the page to reload all cols
             this.$emit('reloadColumn');
-        } else {
+          } else {
             this.$emit('reloadColumn', response.data.column_id);
         }
         this.loading = false;

@@ -1979,6 +1979,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 
@@ -2039,7 +2040,7 @@ __webpack_require__.r(__webpack_exports__);
 
       if (direction === 'up') {
         if (cardCount > 1 && this.currentCard.sort_order > 0) {
-          this.currentCard.sort_order -= 1;
+          this.currentCard.sort_order = this.currentCard.sort_order - 1;
         } else {
           return;
         }
@@ -2047,8 +2048,7 @@ __webpack_require__.r(__webpack_exports__);
 
       if (direction === 'down') {
         if (cardCount > 1 && this.currentCard.sort_order < cardCount - 1) {
-          console.log(cardCount, this.currentCard.sort_order);
-          this.currentCard.sort_order += 1;
+          this.currentCard.sort_order = this.currentCard.sort_order + 1;
         } else {
           return;
         }
@@ -21154,7 +21154,7 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("<")]
+            [_vm._v("«")]
           ),
           _vm._v(" "),
           _c(
@@ -21169,7 +21169,7 @@ var render = function() {
                 }
               }
             },
-            [_vm._v(">")]
+            [_vm._v("»")]
           ),
           _vm._v(" "),
           _c("button", {
@@ -21193,7 +21193,7 @@ var render = function() {
             1
           )
         : _vm._e(),
-      _vm._v(" "),
+      _vm._v("\n  " + _vm._s(_vm.currentCard.sort_order) + "\n  "),
       !_vm.loading
         ? _c("div", { staticClass: "card__title" }, [
             _vm._v(_vm._s(_vm.currentCard.title))
@@ -21357,7 +21357,7 @@ var render = function() {
             name: "slide-fade"
           }
         },
-        _vm._l(_vm.currentCards, function(card, index) {
+        _vm._l(_vm.currentCards, function(card) {
           return _c("Card", {
             key: "card-" + card.id,
             attrs: { card: card, column_id: _vm.id, index: card.id },

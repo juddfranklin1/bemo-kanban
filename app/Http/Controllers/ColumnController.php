@@ -41,4 +41,11 @@ class ColumnController extends Controller
         $columnItem->save();
         return $column;
     }
+
+    public function sort(Request $request, $column) {
+        $columnItem = Column::findOrFail($column);
+        $columnItem->title = $request->title;
+        $columnItem->save();
+        return $column;
+    }
 }

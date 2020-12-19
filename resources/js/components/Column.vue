@@ -20,7 +20,7 @@
     <transition-group tag="div" class="column__content" :id="'column_container_' + id" name="slide-fade">
       <Card
         @reloadColumn="reloadColumn"
-        v-for="(card, index) in currentCards"
+        v-for="(card) in currentCards"
         @deleteCard="removeCard(card.id)"
         :key="'card-' + card.id"
         :card="card"

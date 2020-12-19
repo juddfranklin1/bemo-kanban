@@ -41,11 +41,26 @@ class CardController extends Controller
 
     public function update(Request $request, $card) {
         $cardItem = Card::with('column')->findOrFail($card);
+        $prevSortOrder = $cardItem->sort_order;
         $cardItem->title = $request->title;
         $cardItem->content = $request->content;
         $cardItem->column_id = $request->column_id;
         $cardItem->sort_order = $request->sort_order;
         $cardItem->save();
+        $updatedCardItem = Card::with('column.cards')->findOrFail($card);
+        $colCards = $updatedCardItem->column->cards;
+
+        // Update Sort Order
+        $colCards->each(function($colCard) use ($updatedCardItem, $prevSortOrder, $colCards) {
+            if($colCard->id !== $updatedCardItem->id) {
+                if($updatedCardItem->sort_order === $colCard->sort_order) {// Need to change the sort order
+                    $newSortOrder = $prevSortOrder !== $colCard->sort_order ? $prevSortOrder : count($colCards) - 1;
+                    $colCard->sort_order = $newSortOrder;
+                    $colCard->save();
+                }
+            }
+        });
+
         return $cardItem;
     }
 }
