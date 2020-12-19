@@ -93,8 +93,12 @@ export default {
         .then(response => this.currentCards = this.currentCards.filter(card => card.id !== id));
     }
   },
+  watch: {
+      cards: function(newVal, oldVal) {
+          this.currentCards = newVal
+      }
+  },
   data() {
-
     return {
       currentCards: this.cards
     };

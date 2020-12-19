@@ -2244,6 +2244,11 @@ __webpack_require__.r(__webpack_exports__);
       });
     }
   },
+  watch: {
+    cards: function cards(newVal, oldVal) {
+      this.currentCards = newVal;
+    }
+  },
   data: function data() {
     return {
       currentCards: this.cards
