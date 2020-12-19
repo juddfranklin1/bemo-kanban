@@ -1979,7 +1979,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 
@@ -21193,7 +21192,7 @@ var render = function() {
             1
           )
         : _vm._e(),
-      _vm._v("\n  " + _vm._s(_vm.currentCard.sort_order) + "\n  "),
+      _vm._v(" "),
       !_vm.loading
         ? _c("div", { staticClass: "card__title" }, [
             _vm._v(_vm._s(_vm.currentCard.title))

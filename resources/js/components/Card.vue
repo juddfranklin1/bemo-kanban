@@ -26,7 +26,6 @@
     <div v-if="loading" class="loading flex--center">
         <PacmanLoader color="rgba(0,0,0,.2)" />
     </div>
-    {{ currentCard.sort_order }}
     <div v-if="!loading" class="card__title">{{ currentCard.title }}</div>
     <Modal :name="'card_'+ currentCard.id" @before-close="updateCard" ref="cardModal">
       <div slot="top-right">
