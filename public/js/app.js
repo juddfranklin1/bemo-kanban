@@ -2019,19 +2019,24 @@ __webpack_require__.r(__webpack_exports__);
 
       var existingColumn = this.currentCard.column_id;
       var cardCount = this.$refs.card.parentNode.children.length;
+      var currentColEl = document.querySelector('#column-' + existingColumn);
       var columnCount = document.querySelectorAll('.column').length;
 
       if (direction === 'left') {
         if (this.currentCard.column.sort_order > 0) {
-          this.currentCard.column_id -= 1;
+          var prevColEl = currentColEl.previousSibling;
+          this.currentCard.column_id = prevColEl.dataset.colId;
         } else {
           return;
         }
       }
 
       if (direction === 'right') {
+        console.log(this.currentCard);
+
         if (this.currentCard.column.sort_order < columnCount - 1) {
-          this.currentCard.column_id += 1;
+          var nextColEl = currentColEl.nextSibling;
+          this.currentCard.column_id = nextColEl.dataset.colId;
         } else {
           return;
         }
@@ -21320,7 +21325,10 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "column", attrs: { id: "column-" + _vm.id } },
+    {
+      staticClass: "column",
+      attrs: { "data-col-id": _vm.id, id: "column-" + _vm.id }
+    },
     [
       _c("div", { staticClass: "column__controls" }, [
         _c(

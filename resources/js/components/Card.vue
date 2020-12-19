@@ -77,19 +77,23 @@ export default {
     moveCard(direction) {
       const existingColumn = this.currentCard.column_id;
       const cardCount = this.$refs.card.parentNode.children.length;
+      const currentColEl = document.querySelector('#column-' + existingColumn);
       const columnCount = document.querySelectorAll('.column').length;
 
       if(direction === 'left') {
         if(this.currentCard.column.sort_order > 0) {
-          this.currentCard.column_id -= 1;
+          const prevColEl = currentColEl.previousSibling;
+          this.currentCard.column_id = prevColEl.dataset.colId;
         } else {
-          return;
+            return;
         }
       }
 
       if(direction === 'right') {
+          console.log(this.currentCard);
         if(this.currentCard.column.sort_order < columnCount - 1) {
-          this.currentCard.column_id += 1;
+          const nextColEl = currentColEl.nextSibling;
+          this.currentCard.column_id = nextColEl.dataset.colId;
         } else {
           return;
         }

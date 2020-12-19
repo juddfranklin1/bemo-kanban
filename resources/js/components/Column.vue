@@ -1,5 +1,5 @@
 <template>
-  <div class="column" :id="'column-' + id">
+  <div class="column" :data-col-id="id" :id="'column-' + id">
     <div class="column__controls">
         <button
         class="btn column__button--delete bg--danger"

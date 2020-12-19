@@ -9,7 +9,12 @@ class ColumnController extends Controller
 {
     public function index(Request $request) {
         // Load all columns with cards and nested column data for ease of moving cards
-        return Column::with('cards.column')->orderBy('sort_order')->get();
+        $cols = Column::with('cards.column')->orderBy('sort_order')->get();
+        $cols->each(function($col) use ($request) {
+            $this->show($request, $col->id);
+        });
+        $updatedCols = Column::with('cards.column')->orderBy('sort_order')->get();
+        return $updatedCols;
     }
 
     public function store(Request $request) {
@@ -22,9 +27,14 @@ class ColumnController extends Controller
     }
 
     public function show(Request $request, $column) {
-
         $col = Column::with('cards.column')->firstWhere('id',$column);
-        return $col;
+        $col->cards->each(function($card, $index) {// Clean up sort order
+            $card->sort_order = $index;
+            $card->save();
+        });
+        $updatedCol = Column::with('cards.column')->firstWhere('id',$column);
+
+        return $updatedCol;
     }
 
     public function destroy($column)
@@ -36,13 +46,6 @@ class ColumnController extends Controller
     }
 
     public function update(Request $request, $column) {
-        $columnItem = Column::findOrFail($column);
-        $columnItem->title = $request->title;
-        $columnItem->save();
-        return $column;
-    }
-
-    public function sort(Request $request, $column) {
         $columnItem = Column::findOrFail($column);
         $columnItem->title = $request->title;
         $columnItem->save();
