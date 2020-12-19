@@ -2018,6 +2018,8 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       var existingColumn = this.currentCard.column_id;
+      var cardCount = this.$refs.card.parentNode.children.length;
+      var columnCount = document.querySelectorAll('.column').length;
 
       if (direction === 'left') {
         if (this.currentCard.column.sort_order > 0) {
@@ -2028,8 +2030,6 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       if (direction === 'right') {
-        var columnCount = document.querySelectorAll('.column').length;
-
         if (this.currentCard.column.sort_order < columnCount - 1) {
           this.currentCard.column_id += 1;
         } else {
@@ -2038,7 +2038,7 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       if (direction === 'up') {
-        if (this.currentCard.sort_order > 0) {
+        if (cardCount > 1 && this.currentCard.sort_order > 0) {
           this.currentCard.sort_order -= 1;
         } else {
           return;
@@ -2046,9 +2046,9 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       if (direction === 'down') {
-        var cardCount = this.$refs.card.parentNode.children.length;
+        console.log(cardCount, this.currentCard.sort_order);
 
-        if (this.currentCard.sort_order < cardCount - 1) {
+        if (cardCount > 1 && this.currentCard.sort_order < cardCount - 1) {
           this.currentCard.sort_order += 1;
         } else {
           return;
@@ -2057,12 +2057,16 @@ __webpack_require__.r(__webpack_exports__);
 
       this.loading = true;
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/cards/" + this.currentCard.id, this.currentCard).then(function (response) {
+        console.log(existingColumn, response.data.column_id);
+
         if (existingColumn !== response.data.column_id) {
           // Pass event up to the page to reload all cols
           _this2.$emit('reloadColumn');
         } else {
           _this2.$emit('reloadColumn', response.data.column_id);
         }
+
+        _this2.loading = false;
       })["catch"](function (err) {
         console.error(err);
         _this2.loading = false;

@@ -76,6 +76,9 @@ export default {
     },
     moveCard(direction) {
       const existingColumn = this.currentCard.column_id;
+      const cardCount = this.$refs.card.parentNode.children.length;
+      const columnCount = document.querySelectorAll('.column').length;
+
       if(direction === 'left') {
         if(this.currentCard.column.sort_order > 0) {
           this.currentCard.column_id -= 1;
@@ -85,7 +88,6 @@ export default {
       }
 
       if(direction === 'right') {
-        const columnCount = document.querySelectorAll('.column').length;
         if(this.currentCard.column.sort_order < columnCount - 1) {
           this.currentCard.column_id += 1;
         } else {
@@ -94,16 +96,16 @@ export default {
       }
 
       if(direction === 'up') {
-        if(this.currentCard.sort_order > 0) {
-          this.currentCard.sort_order -= 1;
+          if(cardCount > 1 && this.currentCard.sort_order > 0) {
+              this.currentCard.sort_order -= 1;
         } else {
-          return;
+            return;
         }
       }
 
       if(direction === 'down') {
-        const cardCount = this.$refs.card.parentNode.children.length;
-        if(this.currentCard.sort_order < cardCount - 1) {
+          console.log(cardCount, this.currentCard.sort_order);
+        if(cardCount > 1 && this.currentCard.sort_order < cardCount - 1) {
           this.currentCard.sort_order += 1;
         } else {
           return;
@@ -114,11 +116,13 @@ export default {
 
       Axios.post("/api/cards/" + this.currentCard.id, this.currentCard)
       .then(response => {
+        console.log(existingColumn, response.data.column_id);
         if(existingColumn !== response.data.column_id) {// Pass event up to the page to reload all cols
             this.$emit('reloadColumn');
         } else {
             this.$emit('reloadColumn', response.data.column_id);
         }
+        this.loading = false;
       })
       .catch(err => {
           console.error(err);
