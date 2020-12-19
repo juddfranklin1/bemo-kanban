@@ -70,7 +70,7 @@ export default {
       const card = {
         title: "New Card " + now.toUTCString()
       };
-      Axios.post("/api/cards", {
+      Axios.post("api/cards", {
         title: card.title,
         column_id: this.id
       })
@@ -80,7 +80,7 @@ export default {
     },
     reloadColumn(payload) {
         if(payload === this.id) {
-            Axios.get("/api/columns/" + this.id)
+            Axios.get("api/columns/" + this.id)
             .then(response => {
                 this.currentCards = response.data.cards
             })
@@ -89,7 +89,7 @@ export default {
         }
     },
     removeCard(id) {
-      Axios.delete("/api/cards/" + id)
+      Axios.delete("api/cards/" + id)
         .then(response => this.currentCards = this.currentCards.filter(card => card.id !== id));
     }
   },

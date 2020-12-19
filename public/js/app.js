@@ -2009,7 +2009,7 @@ __webpack_require__.r(__webpack_exports__);
       this.loading = true;
       this.currentCard.title = event.ref.querySelector('.form--card .card__form__title').value;
       this.currentCard.content = event.ref.querySelector('.form--card .card__form__content').value;
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/cards/" + this.currentCard.id, this.currentCard).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("api/cards/" + this.currentCard.id, this.currentCard).then(function (response) {
         _this.currentCard = response.data;
         _this.loading = false;
       });
@@ -2046,9 +2046,8 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       if (direction === 'down') {
-        console.log(cardCount, this.currentCard.sort_order);
-
         if (cardCount > 1 && this.currentCard.sort_order < cardCount - 1) {
+          console.log(cardCount, this.currentCard.sort_order);
           this.currentCard.sort_order += 1;
         } else {
           return;
@@ -2056,9 +2055,7 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       this.loading = true;
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("/api/cards/" + this.currentCard.id, this.currentCard).then(function (response) {
-        console.log(existingColumn, response.data.column_id);
-
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("api/cards/" + this.currentCard.id, this.currentCard).then(function (response) {
         if (existingColumn !== response.data.column_id) {
           // Pass event up to the page to reload all cols
           _this2.$emit('reloadColumn');
@@ -2218,7 +2215,7 @@ __webpack_require__.r(__webpack_exports__);
       var card = {
         title: "New Card " + now.toUTCString()
       };
-      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post("/api/cards", {
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post("api/cards", {
         title: card.title,
         column_id: this.id
       }).then(function (response) {
@@ -2231,7 +2228,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       if (payload === this.id) {
-        axios__WEBPACK_IMPORTED_MODULE_1___default.a.get("/api/columns/" + this.id).then(function (response) {
+        axios__WEBPACK_IMPORTED_MODULE_1___default.a.get("api/columns/" + this.id).then(function (response) {
           _this2.currentCards = response.data.cards;
         });
       } else {
@@ -2241,7 +2238,7 @@ __webpack_require__.r(__webpack_exports__);
     removeCard: function removeCard(id) {
       var _this3 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_1___default.a["delete"]("/api/cards/" + id).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a["delete"]("api/cards/" + id).then(function (response) {
         return _this3.currentCards = _this3.currentCards.filter(function (card) {
           return card.id !== id;
         });
@@ -2460,7 +2457,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     var _this = this;
 
-    var columnRequest = axios__WEBPACK_IMPORTED_MODULE_2___default.a.get("/api/columns").then(function (response) {
+    var columnRequest = axios__WEBPACK_IMPORTED_MODULE_2___default.a.get("api/columns").then(function (response) {
       _this.columns = response.data;
       _this.loading = false;
     });
@@ -2478,7 +2475,7 @@ __webpack_require__.r(__webpack_exports__);
       var column = {
         title: "New Column " + now.toUTCString()
       };
-      axios__WEBPACK_IMPORTED_MODULE_2___default.a.post("/api/columns", column).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_2___default.a.post("api/columns", column).then(function (response) {
         // Async update of
         _this2.columns.push({
           title: response.data.title,
@@ -2489,7 +2486,7 @@ __webpack_require__.r(__webpack_exports__);
     reloadColumns: function reloadColumns() {
       var _this3 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_2___default.a.get("/api/columns/").then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_2___default.a.get("api/columns/").then(function (response) {
         _this3.columns = response.data;
       });
     },
@@ -2497,7 +2494,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this4 = this;
 
       // Remove a column from the database and update component state
-      axios__WEBPACK_IMPORTED_MODULE_2___default.a["delete"]("/api/columns/" + id).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_2___default.a["delete"]("api/columns/" + id).then(function (response) {
         return _this4.columns = _this4.columns.filter(function (col) {
           return col.id !== id;
         });

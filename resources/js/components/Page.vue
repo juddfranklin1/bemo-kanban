@@ -48,7 +48,7 @@ export default {
     PacmanLoader
   },
   data() {
-    const columnRequest = Axios.get("/api/columns")
+    const columnRequest = Axios.get("api/columns")
                             .then(response => {
                                 this.columns = response.data;
                                 this.loading = false;
@@ -65,7 +65,7 @@ export default {
       const column = {
         title: "New Column " + now.toUTCString()
       };
-      Axios.post("/api/columns", column)
+      Axios.post("api/columns", column)
         .then(response => {// Async update of
           this.columns.push({
           title: response.data.title,
@@ -74,13 +74,13 @@ export default {
       });
     },
     reloadColumns() {
-        Axios.get("/api/columns/")
+        Axios.get("api/columns/")
           .then(response => {
             this.columns = response.data
           })
     },
     removeColumn(id) {// Remove a column from the database and update component state
-      Axios.delete("/api/columns/" + id)
+      Axios.delete("api/columns/" + id)
         .then(response => this.columns = this.columns.filter(col => col.id !== id))
     }
   }

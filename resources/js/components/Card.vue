@@ -68,7 +68,7 @@ export default {
       this.loading = true;
       this.currentCard.title = event.ref.querySelector('.form--card .card__form__title').value;
       this.currentCard.content = event.ref.querySelector('.form--card .card__form__content').value;
-      Axios.post("/api/cards/" + this.currentCard.id, this.currentCard)
+      Axios.post("api/cards/" + this.currentCard.id, this.currentCard)
         .then(response => {
           this.currentCard = response.data;
           this.loading = false;
@@ -104,8 +104,8 @@ export default {
       }
 
       if(direction === 'down') {
-          console.log(cardCount, this.currentCard.sort_order);
         if(cardCount > 1 && this.currentCard.sort_order < cardCount - 1) {
+          console.log(cardCount, this.currentCard.sort_order);
           this.currentCard.sort_order += 1;
         } else {
           return;
@@ -114,9 +114,8 @@ export default {
 
       this.loading = true;
 
-      Axios.post("/api/cards/" + this.currentCard.id, this.currentCard)
+      Axios.post("api/cards/" + this.currentCard.id, this.currentCard)
       .then(response => {
-        console.log(existingColumn, response.data.column_id);
         if(existingColumn !== response.data.column_id) {// Pass event up to the page to reload all cols
             this.$emit('reloadColumn');
         } else {
