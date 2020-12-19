@@ -20,6 +20,7 @@ class AppController extends Controller
             ->setDbName(config('database.connections.pgsql.database'))
             ->setUserName(config('database.connections.pgsql.username'))
             ->setPassword(config('database.connections.pgsql.password'))
+            ->setHost(config('database.connections.pgsql.host'))
             ->dumpToFile($filePath);
 
         return response()->download($filePath);
