@@ -74,7 +74,7 @@ export default {
       });
     },
     reloadColumns() {
-        Axios.get("api/columns/")
+        Axios.get("api/columns")
           .then(response => {
             this.columns = response.data
           })

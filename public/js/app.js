@@ -2486,7 +2486,7 @@ __webpack_require__.r(__webpack_exports__);
     reloadColumns: function reloadColumns() {
       var _this3 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_2___default.a.get("api/columns/").then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_2___default.a.get("api/columns").then(function (response) {
         _this3.columns = response.data;
       });
     },
